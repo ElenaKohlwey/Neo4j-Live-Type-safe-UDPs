@@ -51,22 +51,21 @@ CREATE
 
 // create items
 CREATE
-    (i1:Item {type: "weapon", name: "Excalibur", value: 5}),
-    (i2:Item {type: "weapon", name: "Holy Handgrenade", value: 4}),
-    (i3:Item {type: "weapon", name: "Dragonslayer Bow", value: 2}),
-    (i4:Item {type: "weapon", name: "Vengeful Mace of Smiting", value: 2}),
-    (i5:Item {type: "weapon", name: "Bloody Axe of Ogre Decapitation", value:4}),
-    (i6:Item {type: "weapon", name: "Sneaky Dagger of Backstabbing", value: 1}),
-    (i7:Item {type: "other", name: "Holy Grail", value: 5}),
-    (i8:Item {type: "potion", name: "Magic Potion of Strength", value: 2}),
-    (i9:Item {type: "potion", name: "Magic Potion of Wisdom", value: 4}),
+    (i1:Item {type: "weapon", name: "Excalibur"}),
+    (i2:Item {type: "weapon", name: "Holy Handgrenade"}),
+    (i3:Item {type: "weapon", name: "Dragonslayer Bow"}),
+    (i4:Item {type: "weapon", name: "Vengeful Mace of Smiting"}),
+    (i5:Item {type: "weapon", name: "Bloody Axe of Ogre Decapitation"}),
+    (i6:Item {type: "weapon", name: "Sneaky Dagger of Backstabbing"}),
+    (i8:Item {type: "potion", name: "Magic Potion of Strength"}),
+    (i9:Item {type: "potion", name: "Magic Potion of Wisdom"}),
     (i10:Item {type: "armour", name: "armour1"}),
     (i11:Item {type: "armour", name: "armour2"}),
     (i12:Item {type: "armour", name: "armour3"}),
-    (i13:Item {type: "shield", name: "Shield of Taunting", value: 2}),
-    (i14:Item {type: "shield", name: "Shield 2", value: 2}),
-    (i15:Item {type: "shield", name: "Shield 3", value: 2}),
-    (i16:Item {type: "shield", name: "Shield 4", value: 2})
+    (i13:Item {type: "shield", name: "Shield of Taunting"}),
+    (i14:Item {type: "shield", name: "Shield 2"}),
+    (i15:Item {type: "shield", name: "Shield 3"}),
+    (i16:Item {type: "shield", name: "Shield 4"})
 
 // create knights
 CREATE
