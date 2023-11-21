@@ -89,7 +89,6 @@ CREATE
     (k3)-[:USES]->(i12),
     (k3)-[:USES]->(i15),
     (k4)-[:USES]->(i6),
-    (k4)-[:USES]->(i7),
     (k4)-[:USES]->(i8),
     (k4)-[:USES]->(i16)
 
@@ -106,7 +105,6 @@ CREATE
     (i5)-[:IS_NEEDED_FOR]->(q5),
     (i5)-[:IS_NEEDED_FOR]->(q6),
     (i6)-[:IS_NEEDED_FOR]->(q7),
-    (i7)-[:IS_NEEDED_FOR]->(q11),
     (i8)-[:IS_NEEDED_FOR]->(q8),
     (i8)-[:IS_NEEDED_FOR]->(q10),
     (i9)-[:IS_NEEDED_FOR]->(q9),
