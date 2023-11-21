@@ -8,7 +8,6 @@ import org.neo4j.graphdb.Node;
 import org.rle.neo4jdescriptor.annotation.Identifying;
 import org.rle.neo4jdescriptor.annotation.Validate;
 import org.rle.neo4jdescriptor.entity.*;
-import org.rle.neo4jdescriptor.property.EnumProperty;
 import org.rle.neo4jdescriptor.property.prop_basic.StringProperty;
 
 public class ItemDescriptor extends NodeDescriptor {
@@ -28,11 +27,7 @@ public class ItemDescriptor extends NodeDescriptor {
   public final StringProperty prpName = new StringProperty("Name");
 
   @Validate
-  public final EnumProperty<?, ?> prpItemKind = new EnumProperty<>(
-    "type",
-    String.class,
-    ItemKind.class
-  );
+  public final ItemKindProperty prpItemKind = new ItemKindProperty("type");
 
   @Validate
   public final NodeRelationZeroMany questRelations() {

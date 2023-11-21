@@ -50,11 +50,11 @@ public class KnightDescriptor extends NodeDescriptor {
     return mItemRelations;
   }
 
-  public Optional<Node> activeQuest(Node node) {
+  public Optional<Node> quest(Node node) {
     return this.node(questRelation(), node);
   }
 
-  public Stream<Node> activeItems(Node node) {
+  public Stream<Node> usedItems(Node node) {
     return this.nodes(itemRelations(), node);
   }
 }
