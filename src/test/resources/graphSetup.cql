@@ -1,50 +1,26 @@
 // create quests
 CREATE
-    (q0:Quest:End { name: "Quest0", duration: 0 }),
-    (q1:Quest { name: "Quest1", duration: 13 }),
-    (q2:Quest { name: "Quest2", duration: 8 }),
-    (q3:Quest { name: "Quest3", duration: 7 }),
-    (q4:Quest { name: "Quest4", duration: 6 }),
-    (q5:Quest { name: "Quest5", duration: 3 }),
-    (q6:Quest { name: "Quest6", duration: 11 }),
-    (q7:Quest { name: "Quest7", duration: 11 }),
-    (q8:Quest { name: "Quest8", duration: 15 }),
-    (q9:Quest { name: "Quest9", duration: 6 }),
-    (q10:Quest { name: "Quest10", duration: 20 }),
-    (q11:Quest { name: "Quest11", duration: 16 }),
-    (q12:Quest:End { name: "Quest12", duration: 0 })
+    (start:Quest:End { name: "Start", duration: 0 }),
+    (killerRabbit:Quest { name: "Kill the Killer Rabbit", duration: 7 }),
+    (oger:Quest { name: "Kill Oger", duration: 3 }),
+    (doomCavern:Quest { name: "Clear Cavern of Doom", duration: 15 }),
+    (swampWitch:Quest { name: "Visit Swamp Witch", duration: 6 }),
+    (forestOfThorns:Quest { name: "Cross Forest of Thorns", duration: 20 }),
+    (holyGrail:Quest { name: "Find the Holy Grail", duration: 16 }),
+    (end:Quest:End { name: "End", duration: 0 })
 
 // create PRECEDES edges
 CREATE
-    (q0)-[:PRECEDES]->(q5),
-    (q0)-[:PRECEDES]->(q9),
-    (q1)-[:PRECEDES]->(q11),
-    (q1)-[:PRECEDES]->(q10),
-    (q1)-[:PRECEDES]->(q7),
-    (q1)-[:PRECEDES]->(q2),
-    (q1)-[:PRECEDES]->(q3),
-    (q2)-[:PRECEDES]->(q12),
-    (q3)-[:PRECEDES]->(q7),
-    (q3)-[:PRECEDES]->(q10),
-    (q3)-[:PRECEDES]->(q6),
-    (q4)-[:PRECEDES]->(q3),
-    (q4)-[:PRECEDES]->(q7),
-    (q4)-[:PRECEDES]->(q11),
-    (q4)-[:PRECEDES]->(q8),
-    (q5)-[:PRECEDES]->(q8),
-    (q5)-[:PRECEDES]->(q4),
-    (q5)-[:PRECEDES]->(q10),
-    (q5)-[:PRECEDES]->(q2),
-    (q6)-[:PRECEDES]->(q12),
-    (q7)-[:PRECEDES]->(q12),
-    (q8)-[:PRECEDES]->(q10),
-    (q8)-[:PRECEDES]->(q7),
-    (q8)-[:PRECEDES]->(q2),
-    (q8)-[:PRECEDES]->(q1),
-    (q9)-[:PRECEDES]->(q12),
-    (q10)-[:PRECEDES]->(q12),
-    (q11)-[:PRECEDES]->(q7),
-    (q11)-[:PRECEDES]->(q3)
+    (start)-[:PRECEDES]->(oger),
+    (start)-[:PRECEDES]->(swampWitch),
+    (swampWitch)-[:PRECEDES]->(killerRabbit),
+    (swampWitch)-[:PRECEDES]->(forestOfThorns),
+    (oger)-[:PRECEDES]->(doomCavern),
+    (killerRabbit)-[:PRECEDES]->(forestOfThorns),
+    (forestOfThorns)-[:PRECEDES]->(doomCavern),
+    (killerRabbit)-[:PRECEDES]->(holyGrail),
+    (forestOfThorns)-[:PRECEDES]->(holyGrail),
+    (holyGrail)-[:PRECEDES]->(end)
 
 // create items
 CREATE
@@ -56,9 +32,9 @@ CREATE
     (i6:Item { type: "weapon", name: "Sneaky Dagger of Backstabbing" }),
     (i7:Item { type: "potion", name: "Magic Potion of Strength" }),
     (i8:Item { type: "potion", name: "Magic Potion of Wisdom" }),
-    (i9:Item { type: "armour", name: "chainmail" }),
-    (i10:Item { type: "armour", name: "full plate" }),
-    (i11:Item { type: "armour", name: "rigid leather" }),
+    (i9:Item { type: "armour", name: "Leather Armour" }),
+    (i10:Item { type: "armour", name: "Full Plate" }),
+    (i11:Item { type: "armour", name: "Rigid Leather" }),
     (i12:Item { type: "shield", name: "Shield of Taunting" }),
     (i13:Item { type: "shield", name: "Buckler" }),
     (i14:Item { type: "shield", name: "Kite shield" }),
@@ -90,23 +66,18 @@ CREATE
 
 // create IS_NEEDED_FOR relations
 CREATE
-    (i1)-[:IS_NEEDED_FOR]->(q1),
-    (i1)-[:IS_NEEDED_FOR]->(q2),
-    (i1)-[:IS_NEEDED_FOR]->(q10),
-    (i2)-[:IS_NEEDED_FOR]->(q1),
-    (i2)-[:IS_NEEDED_FOR]->(q3),
-    (i3)-[:IS_NEEDED_FOR]->(q3),
-    (i3)-[:IS_NEEDED_FOR]->(q9),
-    (i4)-[:IS_NEEDED_FOR]->(q4),
-    (i5)-[:IS_NEEDED_FOR]->(q5),
-    (i5)-[:IS_NEEDED_FOR]->(q6),
-    (i6)-[:IS_NEEDED_FOR]->(q7),
-    (i7)-[:IS_NEEDED_FOR]->(q8),
-    (i7)-[:IS_NEEDED_FOR]->(q10),
-    (i8)-[:IS_NEEDED_FOR]->(q9),
-    (i9)-[:IS_NEEDED_FOR]->(q10)
+    (i1)-[:IS_NEEDED_FOR]->(forestOfThorns),
+    (i2)-[:IS_NEEDED_FOR]->(killerRabbit),
+    (i3)-[:IS_NEEDED_FOR]->(swampWitch),
+    (i5)-[:IS_NEEDED_FOR]->(oger),
+    (i7)-[:IS_NEEDED_FOR]->(doomCavern),
+    (i7)-[:IS_NEEDED_FOR]->(forestOfThorns),
+    (i8)-[:IS_NEEDED_FOR]->(swampWitch),
+    (i9)-[:IS_NEEDED_FOR]->(forestOfThorns),
+    (i1)-[:IS_NEEDED_FOR]->(holyGrail),
+    (i15)-[:IS_NEEDED_FOR]->(holyGrail)
 
 CREATE
-    (k1)-[:IS_INVOLVED_IN]->(q9),
-    (k2)-[:IS_INVOLVED_IN]->(q9),
-    (k3)-[:IS_INVOLVED_IN]->(q5)
+    (k1)-[:IS_INVOLVED_IN]->(swampWitch),
+    (k2)-[:IS_INVOLVED_IN]->(swampWitch),
+    (k3)-[:IS_INVOLVED_IN]->(oger)
