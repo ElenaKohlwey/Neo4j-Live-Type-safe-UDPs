@@ -27,7 +27,7 @@ public class KnightDescriptor extends NodeDescriptor {
   public static final LabelDescriptor lblKnight = LabelRep.Knight;
 
   @Validate
-  public final StringProperty prpName = new StringProperty("Name");
+  public final StringProperty prpName = new StringProperty("name");
 
   @Validate
   public final NodeRelationZeroOne questRelation() {

@@ -24,7 +24,7 @@ public class ItemDescriptor extends NodeDescriptor {
   public static final LabelDescriptor lblItem = LabelRep.Item;
 
   @Validate
-  public final StringProperty prpName = new StringProperty("Name");
+  public final StringProperty prpName = new StringProperty("name");
 
   @Validate
   public final ItemKindProperty prpItemKind = new ItemKindProperty("type");

@@ -275,4 +275,40 @@ class ProcedureTest extends TestBase {
       resetDatabase();
     }
   }
+
+  @Test
+  void testUsageDesc() {
+    Record record;
+    for (Map.Entry<String, String[]> entry : combos.entrySet()) {
+      String key = entry.getKey();
+      String[] combo = entry.getValue();
+      boolean value = results.get(key);
+
+      try (Session session = driver().session()) {
+        record =
+          session
+            .run(
+              String.format(
+                "MATCH (knight:Knight {name: '%s'}), (item:Item {type:'%s', name: '%s'}) CALL %s(knight,item) YIELD %s, %s RETURN %s AS %s, %s AS %s",
+                combo[0],
+                combo[1],
+                combo[2],
+                ProcedureName.USE_ITEM_DESC,
+                Output.USAGE_SUCCESSFUL,
+                Output.MESSAGE,
+                Output.USAGE_SUCCESSFUL,
+                Output.USAGE_SUCCESSFUL,
+                Output.MESSAGE,
+                Output.MESSAGE
+              )
+            )
+            .single();
+      }
+
+      assertEquals(value, record.get(Output.USAGE_SUCCESSFUL).asBoolean());
+      assertEquals(combo[3], record.get(Output.MESSAGE).asString());
+
+      resetDatabase();
+    }
+  }
 }

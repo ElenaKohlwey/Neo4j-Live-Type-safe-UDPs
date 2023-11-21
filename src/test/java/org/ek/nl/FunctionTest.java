@@ -77,4 +77,24 @@ class FunctionTest extends TestBase {
 
     assertEquals("none", quest);
   }
+
+  @Test
+  void involvedKnightDescriptors() {
+    String quest;
+    try (Session session = driver().session()) {
+      quest =
+        session
+          .run(
+            String.format(
+              "MATCH (a:Knight {name: 'Knight 1'}) RETURN %s(a) AS quest",
+              FunctionName.GET_QUEST_DESC
+            )
+          )
+          .single()
+          .get("quest")
+          .asString();
+    }
+
+    assertEquals("Quest", quest);
+  }
 }

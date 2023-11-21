@@ -43,12 +43,12 @@ public class UsesDescriptor extends RelationshipDescriptor {
     return rel;
   }
 
-  @EndNode
+  @StartNode
   public final KnightDescriptor knightNode() {
     return NodeRep.Knight;
   }
 
-  @StartNode
+  @EndNode
   public final ItemDescriptor itemNode() {
     return NodeRep.Item;
   }

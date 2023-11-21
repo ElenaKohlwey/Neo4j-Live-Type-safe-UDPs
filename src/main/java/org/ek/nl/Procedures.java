@@ -313,13 +313,8 @@ public class Procedures {
       default:
         break;
     }
-    msg = String.format(msg, knightName, newItemName, newItemType);
-    return Stream.of(
-      new Output(
-        usageSuccessful,
-        String.format(msg, knightName, newItemName, newItemType)
-      )
-    );
+    msg = String.format(msg, knightName, newItemName, newItemType.dbValue());
+    return Stream.of(new Output(usageSuccessful, String.format(msg)));
   }
 
   @SuppressWarnings("java:S1104") // complains about there being public non static non final fields and no accessors. But Neo4j needs those in its wrapper objects

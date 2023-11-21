@@ -28,7 +28,7 @@ public class QuestDescriptor extends NodeDescriptor {
   public static final LabelDescriptor lblQuest = LabelRep.Quest;
 
   @Validate
-  public final StringProperty prpName = new StringProperty("Name");
+  public final StringProperty prpName = new StringProperty("name");
 
   @Validate
   public final NodeRelationZeroMany knightsRelation() {

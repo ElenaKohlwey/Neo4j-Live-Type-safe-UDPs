@@ -1,10 +1,12 @@
 package org.ek.nl;
 
+import java.io.Console;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.ek.nl.descriptors.reps.NodeRep;
+import org.ek.nl.descriptors.reps.RelationshipTypeRep;
 import org.ek.nl.schema.GraphLabels;
 import org.ek.nl.schema.GraphRelationshipTypes;
 import org.neo4j.graphdb.Direction;
