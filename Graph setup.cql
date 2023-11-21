@@ -85,7 +85,6 @@ CREATE
     (k2)-[:USES]->(i9),
     (k2)-[:USES]->(i11),
     (k2)-[:USES]->(i14),
-    (k3)-[:USES]->(i4),
     (k3)-[:USES]->(i5),
     (k3)-[:USES]->(i12),
     (k3)-[:USES]->(i15),
