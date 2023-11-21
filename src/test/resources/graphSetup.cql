@@ -1,7 +1,3 @@
-// clear database
-MATCH (n)
-DETACH DELETE n;
-
 // create quests
 CREATE
     (q0:Quest:End { name: "Quest0", duration: 0 }),
@@ -77,20 +73,20 @@ CREATE
 
 // create USES relations
 CREATE
-    (k1)-[:USES]->(i1),
-    (k1)-[:USES]->(i3),
-    (k1)-[:USES]->(i9),
-    (k1)-[:USES]->(i12),
-    (k2)-[:USES]->(i2),
-    (k2)-[:USES]->(i8),
-    (k2)-[:USES]->(i10),
-    (k2)-[:USES]->(i13),
-    (k3)-[:USES]->(i5),
-    (k3)-[:USES]->(i11),
-    (k3)-[:USES]->(i14),
-    (k4)-[:USES]->(i6),
-    (k4)-[:USES]->(i7),
-    (k4)-[:USES]->(i15)
+    (k1)-[:USES { since:'Since forever' }]->(i1),
+    (k1)-[:USES { since:'Since forever' }]->(i3),
+    (k1)-[:USES { since:'Since forever' }]->(i9),
+    (k1)-[:USES { since:'Since forever' }]->(i12),
+    (k2)-[:USES { since:'Since forever' }]->(i2),
+    (k2)-[:USES { since:'Since forever' }]->(i8),
+    (k2)-[:USES { since:'Since forever' }]->(i10),
+    (k2)-[:USES { since:'Since forever' }]->(i13),
+    (k3)-[:USES { since:'Since forever' }]->(i5),
+    (k3)-[:USES { since:'Since forever' }]->(i11),
+    (k3)-[:USES { since:'Since forever' }]->(i14),
+    (k4)-[:USES { since:'Since forever' }]->(i6),
+    (k4)-[:USES { since:'Since forever' }]->(i7),
+    (k4)-[:USES { since:'Since forever' }]->(i15)
 
 // create IS_NEEDED_FOR relations
 CREATE

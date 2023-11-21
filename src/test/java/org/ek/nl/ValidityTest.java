@@ -18,7 +18,7 @@ class ValidityTest extends TestBase {
   @Override
   protected InputStream inputStreamOfCypherFile() {
     // read in the cypher file in the folder test/resources
-    return getClass().getResourceAsStream("/JensGraphSetup.cql");
+    return getClass().getResourceAsStream("/graphSetup.cql");
   }
 
   @Override
