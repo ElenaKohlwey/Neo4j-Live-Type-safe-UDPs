@@ -6,7 +6,7 @@ import org.rle.neo4jdescriptor.repository.RelationshipTypeRepository;
 
 public class RelationshipTypeRep extends RelationshipTypeRepository {
 
-  private RelationshipTypeRep() {
+  public RelationshipTypeRep() {
     super();
   }
 

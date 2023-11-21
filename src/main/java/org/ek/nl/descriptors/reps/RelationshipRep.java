@@ -5,10 +5,11 @@ import org.ek.nl.descriptors.relations.IsNeededForDescriptor;
 import org.ek.nl.descriptors.relations.PrecedesDescriptor;
 import org.ek.nl.descriptors.relations.UsesDescriptor;
 import org.rle.neo4jdescriptor.annotation.RepositoryMember;
+import org.rle.neo4jdescriptor.repository.RelationshipRepository;
 
-public class RelationshipRep {
+public class RelationshipRep extends RelationshipRepository {
 
-  private RelationshipRep() {
+  public RelationshipRep() {
     super();
   }
 
