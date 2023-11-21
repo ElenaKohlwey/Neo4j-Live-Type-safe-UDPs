@@ -1,0 +1,14 @@
+public String getQuest(@Name("knight") Node knight) {
+  // fetch all outgoing relationships of type IS_INVOLVED_IN from knight
+  Iterable<Relationship> isInvolvedInRels = knight.getRelationships(
+    Direction.OUTGOING,
+    GraphRelationshipTypes.IS_INVOLVED_IN
+  );
+
+  // return quest name if quest exists
+  if (isInvolvedInRels.iterator().hasNext()) {
+    Node quest = isInvolvedInRels.iterator().next().getEndNode();
+    return (String) quest.getProperty("name", "");
+  }
+  return "none"; // return "none" if no quest is available
+}

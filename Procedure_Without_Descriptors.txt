@@ -1,0 +1,115 @@
+public Stream<Output> useItem(
+    @Name("knight") Node knight,
+    @Name("newItem") Node newItem
+  ) {
+    boolean usageSuccessful = false;
+    Set<Node> items;
+    String msg = null;
+    String now = new SimpleDateFormat("yyyyMMdd_HHmmss")
+      .format(Calendar.getInstance().getTime());
+    int countArmour = 0;
+    int countWeapon = 0;
+    int countShield = 0;
+
+    // fetch knight name
+    String knightName = (String) knight.getProperty("name");
+
+    // fetch newItem info
+    String newItemType = (String) newItem.getProperty("type");
+    String newItemName = (String) newItem.getProperty("name");
+
+    // fetch items of knight
+    Iterable<Relationship> usesRels = knight.getRelationships(
+      Direction.OUTGOING,
+      GraphRelationshipTypes.USES
+    );
+    items = new HashSet<>();
+    for (Relationship usesRel : usesRels) {
+      Node item = usesRel.getEndNode();
+      items.add(item);
+    }
+
+    // check if knight is already using the newItem
+    if (items.contains(newItem)) {
+      msg =
+        String.format(
+          MESSAGE_SUCCESS_OLD,
+          knightName,
+          newItemName,
+          newItemType
+        );
+      return Stream.of(new Output(true, msg));
+    }
+
+    // count items by ItemKind
+    for (Node item : items) {
+      String itemType = (String) item.getProperty("type");
+      switch (itemType) {
+        case "armour":
+          countArmour++;
+          break;
+        case "weapon":
+          countWeapon++;
+          break;
+        case "shield":
+          countShield++;
+          break;
+        default:
+          break;
+      }
+    }
+
+    // check whether item could additionally be used
+    switch (newItemType) {
+      case "armour":
+        if (countArmour == 0) {
+          Relationship newRel = knight.createRelationshipTo(
+            newItem,
+            GraphRelationshipTypes.USES
+          );
+          newRel.setProperty("since", now);
+          usageSuccessful = true;
+          msg = MESSAGE_SUCCESS_NEW;
+        } else {
+          msg = MESSAGE_FAIL_ARMOUR;
+        }
+        break;
+      case "weapon":
+        if (countWeapon + countShield < 2) {
+          Relationship newRel = knight.createRelationshipTo(
+            newItem,
+            GraphRelationshipTypes.USES
+          );
+          newRel.setProperty("since", now);
+          usageSuccessful = true;
+          msg = MESSAGE_SUCCESS_NEW;
+        } else if (countWeapon >= 2) {
+          msg = MESSAGE_FAIL_TWO_WEAPONS;
+        } else {
+          msg = MESSAGE_FAIL_ONE_WEAPON_ONE_SHIELD;
+        }
+        break;
+      case "shield":
+        if (countWeapon < 2 && countShield == 0) {
+          Relationship newRel = knight.createRelationshipTo(
+            newItem,
+            GraphRelationshipTypes.USES
+          );
+          newRel.setProperty("since", now);
+          usageSuccessful = true;
+          msg = MESSAGE_SUCCESS_NEW;
+        } else if (countWeapon >= 2) {
+          msg = MESSAGE_FAIL_TWO_WEAPONS;
+        } else {
+          msg = MESSAGE_FAIL_ONE_SHIELD;
+        }
+        break;
+      case "potion":
+        usageSuccessful = true;
+        break;
+      default:
+        break;
+    }
+    msg = String.format(msg, knightName, newItemName, newItemType);
+    return Stream.of(new Output(usageSuccessful, msg));
+  }

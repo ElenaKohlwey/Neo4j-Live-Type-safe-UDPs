@@ -1,0 +1,10 @@
+public String getQuestDesc(@Name("knight") Node knight) {
+  // fetch single quest of knight if it exists
+  Optional<Node> quest = NodeRep.Knight.quest(knight);
+
+  // return quest name if quest exists
+  if (quest.isPresent()) {
+    return NodeRep.Quest.prpName.getValueOn(quest.get());
+  }
+  return "none"; // return "none" if no quest is available
+}
