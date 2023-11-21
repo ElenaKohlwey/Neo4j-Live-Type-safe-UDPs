@@ -10,7 +10,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Session;
 import org.rle.neo4jdescriptor.ValidationPrintoutWrapper;
-import org.rle.neo4jdescriptor.ValidationProcedures;
 import org.rle.neo4jdescriptor.report.FullReport;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -19,13 +18,13 @@ class ValidityTest extends TestBase {
   @Override
   protected InputStream inputStreamOfCypherFile() {
     // read in the cypher file in the folder test/resources
-    return getClass().getResourceAsStream("/Graph setup.cql");
+    return getClass().getResourceAsStream("/JensGraphSetup.cql");
   }
 
   @Override
   protected Stream<Class<?>> procedureClasses() {
     // state the class (or classes) that these tests apply to
-    return Stream.of(Procedures.class);
+    return Stream.of(Validation.class);
   }
 
   @Override
@@ -40,7 +39,7 @@ class ValidityTest extends TestBase {
     try (Session session = driver().session()) {
       String cypher = String.format(
         "CALL %s() YIELD %s RETURN %s",
-        ValidationProcedures.ProcedureName.PrintValidation,
+        Validation.ProcedureName.PRINT_VALIDATION,
         ValidationPrintoutWrapper.CONTENT_NAME,
         ValidationPrintoutWrapper.CONTENT_NAME
       );

@@ -33,11 +33,11 @@ public class QuestDescriptor extends NodeDescriptor {
   @Validate
   public final NodeRelationZeroMany knightsRelation() {
     if (mKnightsRel == null) {
-      mKnightsRel = null;
-      new NodeRelationZeroMany(
-        RelationshipRep.IsInvolvedIn,
-        Direction.INCOMING
-      );
+      mKnightsRel =
+        new NodeRelationZeroMany(
+          RelationshipRep.IsInvolvedIn,
+          Direction.INCOMING
+        );
     }
     return mKnightsRel;
   }
@@ -45,8 +45,11 @@ public class QuestDescriptor extends NodeDescriptor {
   @Validate
   public final NodeRelationZeroMany itemsRelation() {
     if (mItemsRel == null) {
-      mItemsRel = null;
-      new NodeRelationOneMany(RelationshipRep.IsNeededFor, Direction.INCOMING);
+      mItemsRel =
+        new NodeRelationZeroMany(
+          RelationshipRep.IsNeededFor,
+          Direction.INCOMING
+        );
     }
     return mItemsRel;
   }
