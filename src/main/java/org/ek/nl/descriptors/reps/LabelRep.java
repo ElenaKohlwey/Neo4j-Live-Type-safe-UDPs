@@ -6,7 +6,7 @@ import org.rle.neo4jdescriptor.repository.LabelRepository;
 
 public class LabelRep extends LabelRepository {
 
-  private LabelRep() {
+  public LabelRep() {
     super();
   }
 

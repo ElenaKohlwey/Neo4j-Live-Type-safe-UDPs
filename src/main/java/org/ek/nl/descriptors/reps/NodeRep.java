@@ -8,7 +8,7 @@ import org.rle.neo4jdescriptor.repository.NodeRepository;
 
 public class NodeRep extends NodeRepository {
 
-  private NodeRep() {
+  public NodeRep() {
     super();
   }
 
