@@ -3,20 +3,17 @@ package org.ek.nl;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.NotImplementedException;
 import org.ek.nl.descriptors.nodes.ItemKind;
 import org.ek.nl.descriptors.reps.NodeRep;
 import org.ek.nl.descriptors.reps.RelationshipRep;
-import org.ek.nl.descriptors.reps.RelationshipTypeRep;
 import org.ek.nl.schema.GraphRelationshipTypes;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.procedure.Context;
 import org.neo4j.procedure.Description;
@@ -76,7 +73,10 @@ public class Procedures {
     @Name("newItem") Node newItem
   ) {
     boolean usageSuccessful = false;
-    HashSet<Node> items = new HashSet<>();
+    Set<Node> items;
+    String msg = null;
+    String now = new SimpleDateFormat("yyyyMMdd_HHmmss")
+      .format(Calendar.getInstance().getTime());
     int countArmour = 0;
     int countWeapon = 0;
     int countShield = 0;
@@ -88,14 +88,31 @@ public class Procedures {
     String newItemType = (String) newItem.getProperty("type");
     String newItemName = (String) newItem.getProperty("name");
 
-    // fetch items of knight and count relevant types
+    // fetch items of knight
     Iterable<Relationship> usesRels = knight.getRelationships(
       Direction.OUTGOING,
       GraphRelationshipTypes.USES
     );
-
+    items = new HashSet<>();
     for (Relationship usesRel : usesRels) {
       Node item = usesRel.getEndNode();
+      items.add(item);
+    }
+
+    // check if knight is already using the newItem
+    if (items.contains(newItem)) {
+      msg =
+        String.format(
+          MESSAGE_SUCCESS_OLD,
+          knightName,
+          newItemName,
+          newItemType
+        );
+      return Stream.of(new Output(true, msg));
+    }
+
+    // count items by ItemKind
+    for (Node item : items) {
       String itemType = (String) item.getProperty("type");
       switch (itemType) {
         case "armour":
@@ -110,112 +127,61 @@ public class Procedures {
         default:
           break;
       }
-      items.add(item);
     }
-
-    // if item is already in use by knight return true
-    if (items.contains(newItem)) {
-      return Stream.of(
-        new Output(
-          true,
-          String.format(
-            MESSAGE_SUCCESS_OLD,
-            knightName,
-            newItemName,
-            newItemType
-          )
-        )
-      );
-    }
-
-    String message = "Error";
 
     // check whether item could additionally be used
     switch (newItemType) {
       case "armour":
         if (countArmour == 0) {
-          knight.createRelationshipTo(newItem, GraphRelationshipTypes.USES);
+          Relationship newRel = knight.createRelationshipTo(
+            newItem,
+            GraphRelationshipTypes.USES
+          );
+          newRel.setProperty("since", now);
           usageSuccessful = true;
-          message =
-            String.format(
-              MESSAGE_SUCCESS_NEW,
-              knightName,
-              newItemName,
-              newItemType
-            );
+          msg = MESSAGE_SUCCESS_NEW;
         } else {
-          message =
-            String.format(
-              MESSAGE_FAIL_ARMOUR,
-              knightName,
-              newItemName,
-              newItemType
-            );
+          msg = MESSAGE_FAIL_ARMOUR;
         }
         break;
       case "weapon":
         if (countWeapon + countShield < 2) {
-          knight.createRelationshipTo(newItem, GraphRelationshipTypes.USES);
+          Relationship newRel = knight.createRelationshipTo(
+            newItem,
+            GraphRelationshipTypes.USES
+          );
+          newRel.setProperty("since", now);
           usageSuccessful = true;
-          message =
-            String.format(
-              MESSAGE_SUCCESS_NEW,
-              knightName,
-              newItemName,
-              newItemType
-            );
-        } else if (countWeapon == 2) {
-          message =
-            String.format(
-              MESSAGE_FAIL_TWO_WEAPONS,
-              knightName,
-              newItemName,
-              newItemType
-            );
+          msg = MESSAGE_SUCCESS_NEW;
+        } else if (countWeapon >= 2) {
+          msg = MESSAGE_FAIL_TWO_WEAPONS;
         } else {
-          message =
-            String.format(
-              MESSAGE_FAIL_ONE_WEAPON_ONE_SHIELD,
-              knightName,
-              newItemName,
-              newItemType
-            );
+          msg = MESSAGE_FAIL_ONE_WEAPON_ONE_SHIELD;
         }
         break;
       case "shield":
         if (countWeapon < 2 && countShield == 0) {
-          knight.createRelationshipTo(newItem, GraphRelationshipTypes.USES);
+          Relationship newRel = knight.createRelationshipTo(
+            newItem,
+            GraphRelationshipTypes.USES
+          );
+          newRel.setProperty("since", now);
           usageSuccessful = true;
-          message =
-            String.format(
-              MESSAGE_SUCCESS_NEW,
-              knightName,
-              newItemName,
-              newItemType
-            );
-        } else if (countWeapon == 2) {
-          message =
-            String.format(
-              MESSAGE_FAIL_TWO_WEAPONS,
-              knightName,
-              newItemName,
-              newItemType
-            );
+          msg = MESSAGE_SUCCESS_NEW;
+        } else if (countWeapon >= 2) {
+          msg = MESSAGE_FAIL_TWO_WEAPONS;
         } else {
-          message =
-            String.format(
-              MESSAGE_FAIL_ONE_SHIELD,
-              knightName,
-              newItemName,
-              newItemType
-            );
+          msg = MESSAGE_FAIL_ONE_SHIELD;
         }
         break;
       case "potion":
         usageSuccessful = true;
         break;
+      default:
+        break;
     }
-    return Stream.of(new Output(usageSuccessful, message));
+    msg = String.format(msg, knightName, newItemName, newItemType);
+    return Stream.of(new Output(usageSuccessful, msg));
   }
 
   @Procedure(mode = Mode.WRITE, name = ProcedureName.USE_ITEM_DESC)
@@ -224,35 +190,39 @@ public class Procedures {
     @Name("knight") Node knight,
     @Name("newItem") Node newItem
   ) {
+    boolean usageSuccessful = false;
+    Set<Node> items;
+    String msg = null;
+    String now = new SimpleDateFormat("yyyyMMdd_HHmmss")
+      .format(Calendar.getInstance().getTime());
     int countArmour = 0;
     int countWeapon = 0;
     int countShield = 0;
+
+    // fetch knight name
     String knightName = NodeRep.Knight.prpName.getValueOn(knight);
-    String newItemName = NodeRep.Item.prpName.getValueOn(newItem);
+
+    // fetch newItem info
     ItemKind newItemType = NodeRep.Item.prpItemKind.getValueOn(newItem);
-    boolean usageSuccessful = false;
-    String msg = null;
+    String newItemName = NodeRep.Item.prpName.getValueOn(newItem);
+
+    // fetch items of knight
+    items = NodeRep.Knight.usedItems(knight).collect(Collectors.toSet());
 
     // check if knight is already using the newItem
-    Set<Node> currentItems = NodeRep.Knight
-      .usedItems(knight)
-      .collect(Collectors.toSet());
-    if (currentItems.contains(newItem)) {
-      return Stream.of(
-        new Output(
-          true,
-          String.format(
-            MESSAGE_SUCCESS_OLD,
-            knightName,
-            newItemName,
-            newItemType.dbValue()
-          )
-        )
-      );
+    if (items.contains(newItem)) {
+      msg =
+        String.format(
+          MESSAGE_SUCCESS_OLD,
+          knightName,
+          newItemName,
+          newItemType.dbValue()
+        );
+      return Stream.of(new Output(true, msg));
     }
 
-    // count current items by ItemKind
-    for (Node item : currentItems) {
+    // count items by ItemKind
+    for (Node item : items) {
       ItemKind itemKind = NodeRep.Item.prpItemKind.getValueOn(item);
       switch (itemKind) {
         case ARMOUR:
@@ -268,8 +238,8 @@ public class Procedures {
           break;
       }
     }
-    String now = new SimpleDateFormat("yyyyMMdd_HHmmss")
-      .format(Calendar.getInstance().getTime());
+
+    // check whether item could additionally be used
     switch (newItemType) {
       case ARMOUR:
         if (countArmour == 0) {
@@ -277,7 +247,6 @@ public class Procedures {
           usageSuccessful = true;
           msg = MESSAGE_SUCCESS_NEW;
         } else {
-          usageSuccessful = false;
           msg = MESSAGE_FAIL_ARMOUR;
         }
         break;
@@ -287,10 +256,8 @@ public class Procedures {
           usageSuccessful = true;
           msg = MESSAGE_SUCCESS_NEW;
         } else if (countWeapon >= 2) {
-          usageSuccessful = false;
           msg = MESSAGE_FAIL_TWO_WEAPONS;
         } else {
-          usageSuccessful = false;
           msg = MESSAGE_FAIL_ONE_WEAPON_ONE_SHIELD;
         }
         break;
@@ -299,11 +266,9 @@ public class Procedures {
           RelationshipRep.Uses.create(knight, newItem, now);
           usageSuccessful = true;
           msg = MESSAGE_SUCCESS_NEW;
-        } else if (countWeapon == 2) {
-          usageSuccessful = false;
+        } else if (countWeapon >= 2) {
           msg = MESSAGE_FAIL_TWO_WEAPONS;
         } else {
-          usageSuccessful = false;
           msg = MESSAGE_FAIL_ONE_SHIELD;
         }
         break;
@@ -311,10 +276,10 @@ public class Procedures {
         usageSuccessful = true;
         break;
       default:
-        break;
+        throw new NotImplementedException("Not all enum items used.");
     }
     msg = String.format(msg, knightName, newItemName, newItemType.dbValue());
-    return Stream.of(new Output(usageSuccessful, String.format(msg)));
+    return Stream.of(new Output(usageSuccessful, msg));
   }
 
   @SuppressWarnings("java:S1104") // complains about there being public non static non final fields and no accessors. But Neo4j needs those in its wrapper objects
@@ -328,9 +293,9 @@ public class Procedures {
     public boolean usageSuccessful;
     public String msg;
 
-    public Output(boolean usageSuccessful, String message) {
+    public Output(boolean usageSuccessful, String msg) {
       this.usageSuccessful = usageSuccessful;
-      this.msg = message;
+      this.msg = msg;
     }
   }
 }
