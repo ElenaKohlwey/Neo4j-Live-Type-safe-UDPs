@@ -9,12 +9,14 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import org.ek.nl.Procedures;
 import org.ek.nl.Procedures.Output;
 import org.ek.nl.Procedures.ProcedureName;
 import org.ek.nl.utility.TestBase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Session;
 
 /**
@@ -48,6 +50,7 @@ class ProcedureTest extends TestBase {
   static final String KNIGHT_1 = "Knight 1";
   static final String KNIGHT_2 = "Knight 2";
   static final String KNIGHT_3 = "Knight 3";
+  static final String KNIGHT_4 = "Knight 4";
   static final String TYPE_WEAPON = "weapon";
   static final String TYPE_ARMOUR = "armour";
   static final String TYPE_SHIELD = "shield";
@@ -65,31 +68,152 @@ class ProcedureTest extends TestBase {
     results = new HashMap<>();
     String KEY_1 =
       "Add new weapon to a knight who has one weapon and no shield.";
-    combos.put(KEY_1, new String[] { KNIGHT_1, TYPE_WEAPON, WEAPON_NAME });
+    combos.put(
+      KEY_1,
+      new String[] {
+        KNIGHT_1,
+        TYPE_WEAPON,
+        WEAPON_NAME,
+        String.format(
+          Procedures.MESSAGE_SUCCESS_NEW,
+          KNIGHT_1,
+          WEAPON_NAME,
+          TYPE_WEAPON
+        ),
+      }
+    );
     results.put(KEY_1, true);
     String KEY_2 =
       "Add new weapon to a knight who has two weapons and no shield.";
-    combos.put(KEY_2, new String[] { KNIGHT_2, TYPE_WEAPON, WEAPON_NAME });
+    combos.put(
+      KEY_2,
+      new String[] {
+        KNIGHT_2,
+        TYPE_WEAPON,
+        WEAPON_NAME,
+        String.format(
+          Procedures.MESSAGE_FAIL_TWO_WEAPONS,
+          KNIGHT_2,
+          WEAPON_NAME,
+          TYPE_WEAPON
+        ),
+      }
+    );
     results.put(KEY_2, false);
     String KEY_3 =
       "Add a weapon to a knight who already has this weapon within his two weapons.";
-    combos.put(KEY_3, new String[] { KNIGHT_2, TYPE_WEAPON, WEAPON_OLD_NAME });
+    combos.put(
+      KEY_3,
+      new String[] {
+        KNIGHT_2,
+        TYPE_WEAPON,
+        WEAPON_OLD_NAME,
+        String.format(
+          Procedures.MESSAGE_SUCCESS_OLD,
+          KNIGHT_2,
+          WEAPON_OLD_NAME,
+          TYPE_WEAPON
+        ),
+      }
+    );
     results.put(KEY_3, true);
     String KEY_4 = "Add an armour to a knight who does not have an armour.";
-    combos.put(KEY_4, new String[] { KNIGHT_1, TYPE_ARMOUR, ARMOUR_NAME });
+    combos.put(
+      KEY_4,
+      new String[] {
+        KNIGHT_1,
+        TYPE_ARMOUR,
+        ARMOUR_NAME,
+        String.format(
+          Procedures.MESSAGE_SUCCESS_NEW,
+          KNIGHT_1,
+          ARMOUR_NAME,
+          TYPE_ARMOUR
+        ),
+      }
+    );
     results.put(KEY_4, true);
     String KEY_5 = "Add an armour to a knight who already has an armour.";
-    combos.put(KEY_5, new String[] { KNIGHT_2, TYPE_ARMOUR, ARMOUR_NAME });
+    combos.put(
+      KEY_5,
+      new String[] {
+        KNIGHT_2,
+        TYPE_ARMOUR,
+        ARMOUR_NAME,
+        String.format(
+          Procedures.MESSAGE_FAIL_ARMOUR,
+          KNIGHT_2,
+          ARMOUR_NAME,
+          TYPE_ARMOUR
+        ),
+      }
+    );
     results.put(KEY_5, false);
     String KEY_6 = "Add a shield to a knight who has one weapon and no shield.";
-    combos.put(KEY_6, new String[] { KNIGHT_1, TYPE_SHIELD, SHIELD_NAME });
+    combos.put(
+      KEY_6,
+      new String[] {
+        KNIGHT_1,
+        TYPE_SHIELD,
+        SHIELD_NAME,
+        String.format(
+          Procedures.MESSAGE_SUCCESS_NEW,
+          KNIGHT_1,
+          SHIELD_NAME,
+          TYPE_SHIELD
+        ),
+      }
+    );
     results.put(KEY_6, true);
     String KEY_7 = "Add a shield to a knight who already has two weapons.";
-    combos.put(KEY_7, new String[] { KNIGHT_2, TYPE_SHIELD, SHIELD_NAME });
+    combos.put(
+      KEY_7,
+      new String[] {
+        KNIGHT_2,
+        TYPE_SHIELD,
+        SHIELD_NAME,
+        String.format(
+          Procedures.MESSAGE_FAIL_TWO_WEAPONS,
+          KNIGHT_2,
+          SHIELD_NAME,
+          TYPE_SHIELD
+        ),
+      }
+    );
     results.put(KEY_7, false);
-    String KEY_8 = "Add a shield to a knight who already has two weapons.";
-    combos.put(KEY_8, new String[] { KNIGHT_3, TYPE_SHIELD, SHIELD_NAME });
+    String KEY_8 = "Add a shield to a knight who already has a shield.";
+    combos.put(
+      KEY_8,
+      new String[] {
+        KNIGHT_3,
+        TYPE_SHIELD,
+        SHIELD_NAME,
+        String.format(
+          Procedures.MESSAGE_FAIL_ONE_SHIELD,
+          KNIGHT_3,
+          SHIELD_NAME,
+          TYPE_SHIELD
+        ),
+      }
+    );
     results.put(KEY_8, false);
+    String KEY_9 =
+      "Add a weapon to a knight who already has a weapon and a shield.";
+    combos.put(
+      KEY_9,
+      new String[] {
+        KNIGHT_4,
+        TYPE_WEAPON,
+        WEAPON_NAME,
+        String.format(
+          Procedures.MESSAGE_FAIL_ONE_WEAPON_ONE_SHIELD,
+          KNIGHT_4,
+          WEAPON_NAME,
+          TYPE_WEAPON
+        ),
+      }
+    );
+    results.put(KEY_9, false);
   }
 
   // resets database after each test
@@ -119,33 +243,35 @@ class ProcedureTest extends TestBase {
 
   @Test
   void testUsage() {
-    boolean usageSuccessful;
+    Record record;
     for (Map.Entry<String, String[]> entry : combos.entrySet()) {
       String key = entry.getKey();
       String[] combo = entry.getValue();
       boolean value = results.get(key);
 
       try (Session session = driver().session()) {
-        usageSuccessful =
+        record =
           session
             .run(
               String.format(
-                "MATCH (knight:Knight {name: '%s'}), (item:Item {type:'%s', name: '%s'}) CALL %s(knight,item) YIELD %s RETURN %s AS %s",
+                "MATCH (knight:Knight {name: '%s'}), (item:Item {type:'%s', name: '%s'}) CALL %s(knight,item) YIELD %s, %s RETURN %s AS %s, %s AS %s",
                 combo[0],
                 combo[1],
                 combo[2],
                 ProcedureName.USE_ITEM,
                 Output.USAGE_SUCCESSFUL,
+                Output.MESSAGE,
                 Output.USAGE_SUCCESSFUL,
-                Output.USAGE_SUCCESSFUL
+                Output.USAGE_SUCCESSFUL,
+                Output.MESSAGE,
+                Output.MESSAGE
               )
             )
-            .single()
-            .get(Output.USAGE_SUCCESSFUL)
-            .asBoolean();
+            .single();
       }
 
-      assertEquals(value, usageSuccessful);
+      assertEquals(value, record.get(Output.USAGE_SUCCESSFUL).asBoolean());
+      assertEquals(combo[3], record.get(Output.MESSAGE).asString());
 
       resetDatabase();
     }
