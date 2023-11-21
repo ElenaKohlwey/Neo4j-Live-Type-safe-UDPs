@@ -1,12 +1,10 @@
 package org.ek.nl;
 
-import java.io.Console;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.ek.nl.descriptors.reps.NodeRep;
-import org.ek.nl.descriptors.reps.RelationshipTypeRep;
 import org.ek.nl.schema.GraphLabels;
 import org.ek.nl.schema.GraphRelationshipTypes;
 import org.neo4j.graphdb.Direction;
@@ -55,13 +53,12 @@ public class Functions {
       GraphRelationshipTypes.IS_INVOLVED_IN
     );
 
-    // fetch quest node from relationship Iterable if not empty and return name
+    // return quest name if quest exists
     if (isInvolvedInRels.iterator().hasNext()) {
       Node quest = isInvolvedInRels.iterator().next().getEndNode();
       return (String) quest.getProperty("name", "");
-    } else {
-      return "none"; // return "none" if no quest is available
     }
+    return "none"; // return "none" if no quest is available
   }
 
   @UserFunction(name = FunctionName.GET_QUEST_HANDLE_ERRORS)
@@ -109,10 +106,13 @@ public class Functions {
   @UserFunction(name = FunctionName.GET_QUEST_DESC)
   @Description(FunctionDescription.GET_QUEST)
   public String getQuestDesc(@Name("knight") Node knight) {
+    // fetch single quest of knight if it exists
     Optional<Node> quest = NodeRep.Knight.quest(knight);
-    if (!quest.isPresent()) {
-      return "none";
+
+    // return quest name if quest exists
+    if (quest.isPresent()) {
+      return NodeRep.Quest.prpName.getValueOn(quest.get());
     }
-    return NodeRep.Quest.prpName.getValueOn(quest.get());
+    return "none"; // return "none" if no quest is available
   }
 }
