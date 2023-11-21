@@ -7,7 +7,7 @@ call db.schema.visualization
 MATCH (a) RETURN a
 
 //03 Show Graph Start
-MATCH (q0:Quest:End {name: "Quest0"})-[:PRECEDES]->(q:Quest)--(b) WHERE NOT b:Quest return *
+MATCH (q0:Quest:End {name: "Start"})-[:PRECEDES]->(q:Quest)--(b) WHERE NOT b:Quest return *
 
 //04 GetQuest
 MATCH (k:Knight) RETURN k.name, org.ek.nl.getQuest(k)
@@ -21,5 +21,13 @@ MATCH (i:Item {name:"Vengeful Mace of Smiting"})
 CALL org.ek.nl.useItem(k,i)
 YIELD usageSuccessful RETURN usageSuccessful
 
+//07 Add two more errors
+MATCH (percival:Knight {name: "Sir Percival"})
+MATCH (excalibur:Item {name: "Excalibur"})
+CREATE (percival)-[:USES]->(excalibur)
 
-///////////// JENS /////////////
+//08 Introduce property type and enum errors
+MATCH (item:Item {name:"Kite shield"}) SET item.name = 42, item.type = "foobar"
+
+//09 Validate
+CALL org.ek.nl.validate() YIELD validationPrintout RETURN validationPrintout
