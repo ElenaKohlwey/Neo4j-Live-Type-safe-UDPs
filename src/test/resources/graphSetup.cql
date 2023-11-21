@@ -35,10 +35,8 @@ CREATE
     (i9:Item { type: "armour", name: "Leather Armour" }),
     (i10:Item { type: "armour", name: "Full Plate" }),
     (i11:Item { type: "armour", name: "Rigid Leather" }),
-    (i12:Item { type: "shield", name: "Shield of Taunting" }),
-    (i13:Item { type: "shield", name: "Buckler" }),
-    (i14:Item { type: "shield", name: "Kite shield" }),
-    (i15:Item { type: "shield", name: "Tower shield" })
+    (i12:Item { type: "shield", name: "Kite shield" }),
+    (i13:Item { type: "shield", name: "Tower shield" })
 
 // create knights
 CREATE
@@ -52,17 +50,15 @@ CREATE
     (k1)-[:USES { since:'Since forever' }]->(i1),
     (k1)-[:USES { since:'Since forever' }]->(i3),
     (k1)-[:USES { since:'Since forever' }]->(i9),
-    (k1)-[:USES { since:'Since forever' }]->(i12),
     (k2)-[:USES { since:'Since forever' }]->(i2),
     (k2)-[:USES { since:'Since forever' }]->(i8),
     (k2)-[:USES { since:'Since forever' }]->(i10),
-    (k2)-[:USES { since:'Since forever' }]->(i13),
     (k3)-[:USES { since:'Since forever' }]->(i5),
     (k3)-[:USES { since:'Since forever' }]->(i11),
-    (k3)-[:USES { since:'Since forever' }]->(i14),
+    (k3)-[:USES { since:'Since forever' }]->(i12),
     (k4)-[:USES { since:'Since forever' }]->(i6),
     (k4)-[:USES { since:'Since forever' }]->(i7),
-    (k4)-[:USES { since:'Since forever' }]->(i15)
+    (k4)-[:USES { since:'Since forever' }]->(i13)
 
 // create IS_NEEDED_FOR relations
 CREATE
@@ -75,7 +71,7 @@ CREATE
     (i8)-[:IS_NEEDED_FOR]->(swampWitch),
     (i9)-[:IS_NEEDED_FOR]->(forestOfThorns),
     (i1)-[:IS_NEEDED_FOR]->(holyGrail),
-    (i15)-[:IS_NEEDED_FOR]->(holyGrail)
+    (i13)-[:IS_NEEDED_FOR]->(holyGrail)
 
 CREATE
     (k1)-[:IS_INVOLVED_IN]->(swampWitch),
