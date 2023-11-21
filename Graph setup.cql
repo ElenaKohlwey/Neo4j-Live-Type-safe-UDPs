@@ -58,15 +58,15 @@ CREATE
     (i4:Item { type: "weapon", name: "Vengeful Mace of Smiting" }),
     (i5:Item { type: "weapon", name: "Bloody Axe of Ogre Decapitation" }),
     (i6:Item { type: "weapon", name: "Sneaky Dagger of Backstabbing" }),
-    (i8:Item { type: "potion", name: "Magic Potion of Strength" }),
-    (i9:Item { type: "potion", name: "Magic Potion of Wisdom" }),
-    (i10:Item { type: "armour", name: "chainmail" }),
-    (i11:Item { type: "armour", name: "full plate" }),
-    (i12:Item { type: "armour", name: "rigid leather" }),
-    (i13:Item { type: "shield", name: "Shield of Taunting" }),
-    (i14:Item { type: "shield", name: "Buckler" }),
-    (i15:Item { type: "shield", name: "Kite shield" }),
-    (i16:Item { type: "shield", name: "Tower shield" })
+    (i7:Item { type: "potion", name: "Magic Potion of Strength" }),
+    (i8:Item { type: "potion", name: "Magic Potion of Wisdom" }),
+    (i9:Item { type: "armour", name: "chainmail" }),
+    (i10:Item { type: "armour", name: "full plate" }),
+    (i11:Item { type: "armour", name: "rigid leather" }),
+    (i12:Item { type: "shield", name: "Shield of Taunting" }),
+    (i13:Item { type: "shield", name: "Buckler" }),
+    (i14:Item { type: "shield", name: "Kite shield" }),
+    (i15:Item { type: "shield", name: "Tower shield" })
 
 // create knights
 CREATE
@@ -79,18 +79,18 @@ CREATE
 CREATE
     (k1)-[:USES]->(i1),
     (k1)-[:USES]->(i3),
-    (k1)-[:USES]->(i10),
-    (k1)-[:USES]->(i13),
+    (k1)-[:USES]->(i9),
+    (k1)-[:USES]->(i12),
     (k2)-[:USES]->(i2),
-    (k2)-[:USES]->(i9),
-    (k2)-[:USES]->(i11),
-    (k2)-[:USES]->(i14),
+    (k2)-[:USES]->(i8),
+    (k2)-[:USES]->(i10),
+    (k2)-[:USES]->(i13),
     (k3)-[:USES]->(i5),
-    (k3)-[:USES]->(i12),
-    (k3)-[:USES]->(i15),
+    (k3)-[:USES]->(i11),
+    (k3)-[:USES]->(i14),
     (k4)-[:USES]->(i6),
-    (k4)-[:USES]->(i8),
-    (k4)-[:USES]->(i16)
+    (k4)-[:USES]->(i7),
+    (k4)-[:USES]->(i15)
 
 // create IS_NEEDED_FOR relations
 CREATE
@@ -105,10 +105,10 @@ CREATE
     (i5)-[:IS_NEEDED_FOR]->(q5),
     (i5)-[:IS_NEEDED_FOR]->(q6),
     (i6)-[:IS_NEEDED_FOR]->(q7),
-    (i8)-[:IS_NEEDED_FOR]->(q8),
-    (i8)-[:IS_NEEDED_FOR]->(q10),
-    (i9)-[:IS_NEEDED_FOR]->(q9),
-    (i10)-[:IS_NEEDED_FOR]->(q10)
+    (i7)-[:IS_NEEDED_FOR]->(q8),
+    (i7)-[:IS_NEEDED_FOR]->(q10),
+    (i8)-[:IS_NEEDED_FOR]->(q9),
+    (i9)-[:IS_NEEDED_FOR]->(q10)
 
 CREATE
     (k1)-[:IS_INVOLVED_IN]->(q9),
