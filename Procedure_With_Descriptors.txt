@@ -28,7 +28,7 @@ public Stream<Output> useItemDesc(
           MESSAGE_SUCCESS_OLD,
           knightName,
           newItemName,
-          newItemType
+          newItemType.dbValue()
         );
       return Stream.of(new Output(true, msg));
     }
@@ -88,7 +88,7 @@ public Stream<Output> useItemDesc(
         usageSuccessful = true;
         break;
       default:
-        throw new NotImplementedException("Not all enum items used.");
+        throw new NotImplementedException("Unknown Enum item.");
     }
     msg = String.format(msg, knightName, newItemName, newItemType.dbValue());
     return Stream.of(new Output(usageSuccessful, msg));

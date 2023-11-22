@@ -108,7 +108,7 @@ public Stream<Output> useItem(
         usageSuccessful = true;
         break;
       default:
-        break;
+        throw new NotImplementedException("Unknown Type String.");
     }
     msg = String.format(msg, knightName, newItemName, newItemType);
     return Stream.of(new Output(usageSuccessful, msg));
