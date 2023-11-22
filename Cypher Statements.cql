@@ -1,5 +1,3 @@
-///////////// ELENA /////////////
-
 //01 Show Schema
 call db.schema.visualization
 
@@ -15,11 +13,20 @@ MATCH (k:Knight) RETURN k.name, org.ek.nl.getQuest(k)
 //05 Add Queen Guinevere
 MATCH (k:Knight {name:"Sir Gawain"}) CREATE(k)-[:IS_INVOLVED_IN]->(q:Queen {name: "Guinevere"})
 
-//06 UseItem -> false
+//05b GetQuest Error
+MATCH (k:Knight) RETURN k.name, org.ek.nl.getQuestHandleErrors(k)
+
+//06a UseItem -> false
+MATCH (k:Knight {name:"Sir Lancelot"})
+MATCH (i:Item {name:"Vengeful Mace of Smiting"})
+CALL org.ek.nl.useItem(k,i)
+YIELD usageSuccessful, msg RETURN usageSuccessful, msg
+
+//06b UseItem -> true
 MATCH (k:Knight {name:"Sir Gawain"})
 MATCH (i:Item {name:"Vengeful Mace of Smiting"})
 CALL org.ek.nl.useItem(k,i)
-YIELD usageSuccessful RETURN usageSuccessful
+YIELD usageSuccessful, msg RETURN usageSuccessful, msg
 
 //07 Add two more errors
 MATCH (percival:Knight {name: "Sir Percival"})
