@@ -21,12 +21,12 @@ public class IsInvolvedInDescriptor extends RelationshipDescriptor {
     RelationshipTypeRep.IS_INVOLVED_IN;
 
   @StartNode
-  public final KnightDescriptor knightNode() {
+  public final KnightDescriptor knightNodeDescriptor() {
     return NodeRep.Knight;
   }
 
   @EndNode
-  public final QuestDescriptor questNode() {
+  public final QuestDescriptor questNodeDescriptor() {
     return NodeRep.Quest;
   }
 }

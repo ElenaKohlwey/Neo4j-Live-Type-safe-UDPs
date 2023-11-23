@@ -21,12 +21,12 @@ public class IsNeededForDescriptor extends RelationshipDescriptor {
     RelationshipTypeRep.IS_NEEDED_FOR;
 
   @StartNode
-  public final ItemDescriptor itemNode() {
+  public final ItemDescriptor itemNodeDescriptor() {
     return NodeRep.Item;
   }
 
   @EndNode
-  public final QuestDescriptor questNode() {
+  public final QuestDescriptor questNodeDescriptor() {
     return NodeRep.Quest;
   }
 }

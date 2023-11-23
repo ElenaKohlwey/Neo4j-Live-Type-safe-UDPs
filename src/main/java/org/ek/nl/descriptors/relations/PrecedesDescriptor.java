@@ -21,12 +21,12 @@ public class PrecedesDescriptor extends RelationshipDescriptor {
     RelationshipTypeRep.PRECEDES;
 
   @EndNode
-  public final QuestDescriptor successor() {
+  public final QuestDescriptor successorDescriptor() {
     return NodeRep.Quest;
   }
 
   @StartNode
-  public final QuestDescriptor predecessor() {
+  public final QuestDescriptor predecessorDescriptor() {
     return NodeRep.Quest;
   }
 }
