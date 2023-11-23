@@ -16,8 +16,7 @@ CREATE
     (swampWitch)-[:PRECEDES]->(killerRabbit),
     (swampWitch)-[:PRECEDES]->(forestOfThorns),
     (oger)-[:PRECEDES]->(doomCavern),
-    (killerRabbit)-[:PRECEDES]->(forestOfThorns),
-    (forestOfThorns)-[:PRECEDES]->(doomCavern),
+    (doomCavern)-[:PRECEDES]->(forestOfThorns),
     (killerRabbit)-[:PRECEDES]->(holyGrail),
     (forestOfThorns)-[:PRECEDES]->(holyGrail),
     (holyGrail)-[:PRECEDES]->(end)

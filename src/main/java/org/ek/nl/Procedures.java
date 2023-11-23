@@ -178,7 +178,7 @@ public class Procedures {
         usageSuccessful = true;
         break;
       default:
-        break;
+        throw new NotImplementedException("Unknown Type String.");
     }
     msg = String.format(msg, knightName, newItemName, newItemType);
     return Stream.of(new Output(usageSuccessful, msg));
@@ -276,7 +276,7 @@ public class Procedures {
         usageSuccessful = true;
         break;
       default:
-        throw new NotImplementedException("Not all enum items used.");
+        throw new NotImplementedException("Unknown Enum item.");
     }
     msg = String.format(msg, knightName, newItemName, newItemType.dbValue());
     return Stream.of(new Output(usageSuccessful, msg));
